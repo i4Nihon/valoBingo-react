@@ -6,11 +6,12 @@ const ComfyJS = require("comfy.js");
 
 const regex = /^[1-4]\.[1-4]$/;
 
-const makeItOn = new CustomEvent('makeItOn');
-const makeItOff = new CustomEvent('makeItOff');
+const makeChange = new CustomEvent('makeChange');
 const touchChange = new CustomEvent('touchChange')
 
 function Field({contentF, isActive}) {
+  const [countId, setCountId] = useState(1)
+  setCountId((prevId)=> prevId++ )
 
   return (
     <>
@@ -22,6 +23,16 @@ function Field({contentF, isActive}) {
 
 function Row({rowId, contentR}) {
 
+  const[ componentsId, setComponentsId] = useState([1,2,3,4])
+
+  const updateComponentsId  = ()=>{
+    setComponetnsId((prevComponents)=>{
+      prevComponents.map((componentId)=>
+       componentId.id  = id ? { ...componentId, value: newValue} : componentId
+      )
+    })
+  }
+
   const [isActive, setIsActive] = useState({
     1: true,
     2: true,
@@ -29,11 +40,15 @@ function Row({rowId, contentR}) {
     4: true
   });
 
-  document.addEventListener('makeItOn', (e) => {
-    setIsActive(e, true)
-  })
-  document.addEventListener('makeItOff', (e) => {
-    setIsActive(false)
+  document.addEventListener('makeChange', (e) => {
+    if(isActive){
+      setIsActive(e.detail, false)
+    }
+    else{
+      setIsActive(e.detail, true)
+
+    }
+  
   })
 
 
@@ -44,6 +59,13 @@ function Row({rowId, contentR}) {
 
   return (
     <div className={"row"}>
+      
+    {
+      componentsId.map((components)=>{
+        
+      })
+    }
+
       <Field contentF={split[0]} fieldId={1} isActive={isActive}></Field>
       <Field contentF={split[1]} fieldId={2} isActive={isActive}></Field>
       <Field contentF={split[2]} fieldId={3} isActive={isActive}></Field>
@@ -54,7 +76,9 @@ function Row({rowId, contentR}) {
 
 
 export default function Grid() {
-
+  document.addEventListener(touchChange, (e)=>{
+    
+  })
   return (
     <div>
       <Row rowId={1} contentR={"a1 b1 c1 d1"}></Row>
